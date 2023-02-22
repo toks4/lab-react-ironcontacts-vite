@@ -1,34 +1,113 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import contacts from './contacts.json'
 
 function App() {
-  const [count, setCount] = useState(0)
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+const [firstFiveCeleb, setFirstFiveCeleb] = useState(contacts.slice(0,5)); 
+console.log(firstFiveCeleb);
+const [listOfContacts, setListOfContacts] = useState(contacts.slice(6));
+const getContacts =()=>{
+  const randomContact= listOfContacts[Math.floor(Math.random() * listOfContacts.length)];
+setFirstFiveCeleb([...firstFiveCeleb,randomContact]);
+const filterArray = listOfContacts.filter((contact)=>{
+  if(randomContact.name !== contact.name){
+   
+  }
+  return contact
+
+})
+
+setListOfContacts(filterArray);
 }
+
+
+function sortByName() {
+  let sortedNameArray = [...firstFiveCeleb].sort((a, b) => {
+
+    if(a.name > b.name){
+      return 1
+    }else if(a.name < b.name){
+      return -1
+    }else{
+      return 0
+    }
+  })
+  setFirstFiveCeleb(sortedNameArray)
+}
+
+
+function sortByPopularity(){
+  let sortedPopArray = [...firstFiveCeleb].sort((a, b) => {
+
+    if(b.popularity > a.popularity){
+     return 1
+
+     } else if (b.popularity < a.popularity){
+ return -1
+     }
+     else{
+       return 0 
+     }
+     })
+
+       setFirstFiveCeleb(sortedPopArray)
+}
+
+function deleteName(id){
+  let deletedNameArr = firstFiveCeleb.filter((celeb) => celeb.id !== id)
+  
+  
+  setFirstFiveCeleb(deletedNameArr)
+ 
+   }
+  
+   
+   
+
+
+return (
+  
+  <div className="App">
+  <button onClick={getContacts}>addRandom</button>
+  <button onClick={sortByPopularity}>Sort by Popularity</button>
+  <button onClick={sortByName}>Sort by name</button>
+
+
+    <h1>Iron Contacts</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Picture</th>
+          <th>Name</th>
+          <th>Popularity</th>
+          <th>Won Oscar</th>
+          <th>Won Emmy</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {firstFiveCeleb.map((celeb) => (
+          <tr>
+            <td>
+              <img src={celeb.pictureUrl} alt="celeb" className="image" />
+            </td>
+            <td>{celeb.name}</td>
+            <td>{Math.round(celeb.popularity * 100) / 100}</td>
+
+            <td>{celeb.wonOscar && <p> 🏆 </p>}</td>
+            <td>{celeb.wonEmmy && <p> 🏆 </p>}</td>
+            <td><button onClick= {() => deleteName(celeb.id)}>Delete</button></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+)
+}
+
+
+
 
 export default App
